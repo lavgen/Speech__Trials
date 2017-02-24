@@ -1,0 +1,10 @@
+.DS_Store
+node_modules/
+extras/
+data/
+web-speech-api-master/
+views/manifest.webapp
+views/speech-color-changer/
+public/
+
+

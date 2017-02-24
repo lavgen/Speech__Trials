@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html>
+<style>
+	*, *:before, *:after {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+html {
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 100%;
+}
+
+#page-wrapper {
+  width: 640px;
+  background: #FFFFFF;
+  padding: 1em;
+
+
+}
+
+h1 {
+  margin-top: 0;
+}
+
+#msg {
+  font-size: 0.9em;
+  line-height: 1.4em;
+}
+
+#msg.not-supported strong {
+  color: #CC0000;
+}
+
+input[type="text"] {
+  width: 100%;
+  padding: 0.5em;
+  font-size: 1.2em;
+  border-radius: 3px;
+ 
+}
+
+input[type="range"] {
+  width: 300px;
+}
+
+label {
+  display: inline-block;
+  float: left;
+  width: 150px;
+}
+
+.option {
+  margin: 1em 0;
+}
+
+button {
+  display: inline-block;
+  border-radius: 3px;
+  border: none;
+  font-size: 0.9rem;
+  padding: 0.5rem 0.8em;
+  background-color: #9c27b0;
+  color: white;
+  -webkit-font-smoothing: antialiased;
+  font-weight: bold;
+  margin: 0;
+  width: 100%;
+  text-align: center;
+}
+
+button:hover, button:focus {
+  opacity: 0.75;
+  cursor: pointer;
+}
+
+button:active {
+  opacity: 1;
+  box-shadow: 0 -3px 10px rgba(0, 0, 0, 0.1) inset;
+}
+
+</style>
+<body>
+	
+
+<div id="page-wrapper">
+  <h1>Web Speech Synthesis Demo</h1>
+  
+  <p id="msg"></p>
+
+  <input type="text" name="speech-msg" id="speech-msg" x-webkit-speech>
+
+	<div class="option">
+		<label for="voice">Voice</label>
+		<select name="voice" id="voice"></select>
+	</div>
+	<div class="option">
+		<label for="volume">Volume</label>
+		<input type="range" min="0" max="1" step="0.1" name="volume" id="volume" value="1">
+	</div>
+	<div class="option">
+		<label for="rate">Rate</label>
+		<input type="range" min="0.1" max="10" step="0.1" name="rate" id="rate" value="1">
+	</div>
+	<div class="option">
+		<label for="pitch">Pitch</label>
+		<input type="range" min="0" max="2" step="0.1" name="pitch" id="pitch" value="1">
+	</div>
+
+	<button id="speak">Speak</button>
+	<script>
+		/*
+ * Check for browser support
+ */
+var supportMsg = document.getElementById('msg');
+
+if ('speechSynthesis' in window) {
+	supportMsg.innerHTML = 'Your browser <strong>supports</strong> speech synthesis.';
+} else {
+	supportMsg.innerHTML = 'Sorry your browser <strong>does not support</strong> speech synthesis.<br>Try this in <a href="http://www.google.co.uk/intl/en/chrome/browser/canary.html">Chrome Canary</a>.';
+	supportMsg.classList.add('not-supported');
+}
+
+
+// Get the 'speak' button
+var button = document.getElementById('speak');
+
+// Get the text input element.
+var speechMsgInput = document.getElementById('speech-msg');
+
+// Get the voice select element.
+var voiceSelect = document.getElementById('voice');
+
+// Get the attribute controls.
+var volumeInput = document.getElementById('volume');
+var rateInput = document.getElementById('rate');
+var pitchInput = document.getElementById('pitch');
+
+
+// Fetch the list of voices and populate the voice options.
+function loadVoices() {
+  // Fetch the available voices.
+	var voices = speechSynthesis.getVoices();
+  
+  // Loop through each of the voices.
+	voices.forEach(function(voice, i) {
+    // Create a new option element.
+		var option = document.createElement('option');
+    
+    // Set the options value and text.
+		option.value = voice.name;
+		option.innerHTML = voice.name + voice.lang;
+		  
+    // Add the option to the voice selector.
+		voiceSelect.appendChild(option);
+	});
+}
+
+// Execute loadVoices.
+loadVoices();
+
+// Chrome loads voices asynchronously.
+window.speechSynthesis.onvoiceschanged = function(e) {
+  loadVoices();
+};
+
+
+// Create a new utterance for the specified text and add it to
+// the queue.
+function speak(text) {
+  // Create a new instance of SpeechSynthesisUtterance.
+	var msg = new SpeechSynthesisUtterance();
+
+
+var arrayEn = ["A","land","is","so","means","our","dark","are","your","they","both","then","becomes my", "I ","landed","was","as dark as your","full of","how you knew","all of them","arise","blooms"];
+var arrayTr = ["Kara","Karadır","benim Karam","daark"];
+var arrayDe = ["ein","Ist","Land","oder","ist ein","das","Dunkel","unser"];
+msg.text = arrayEn[0] ;
+console.log(msg.text);
+msg.lang = 'en-Us';
+  // Set the text.
+	// msg.text = text;
+  // Set the attributes.
+	msg.volume = parseFloat(volumeInput.value);
+	msg.rate = parseFloat(rateInput.value);
+	msg.pitch = parseFloat(pitchInput.value);
+  
+  // If a voice has been selected, find the voice and set the
+  // utterance instance's voice attribute.
+  if (msg.text == arrayEn) {
+      msg.name = 'Vickien';
+  }else if (msg.text == arrayTr){
+      msg.name = 'Yelda';
+  };
+	console.log(msg.name);
+// msg.name = 'Annade';
+  
+	
+  
+  // Queue this utterance.
+	window.speechSynthesis.speak(msg);
+}
+
+
+// Set up an event listener for when the 'speak' button is clicked.
+button.addEventListener('click', function(e) {
+	if (speechMsgInput.value.length > 0) {
+		speak(speechMsgInput.value);
+	}
+});
+
+	</script>
+</body>
+</div>
+</html>
