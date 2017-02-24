@@ -28,7 +28,8 @@ server.set('views', __dirname + '/views'); // set the folder where the views ( i
 server.set('view engine', 'html');
 // // what's the default folder for any requests to static files
 // server.use(express.static(__dirname+'/public/mespeak/mespeak'));
-server.use(express.static(__dirname+'/public'));
+server.use('/mespeak/', express.static(__dirname + '/mespeak/'));
+server.use(express.static(__dirname+'/public/'));
 // compress all responses
 //for CORS errors, we are adding these to our header to resolve conflict with security
 server.use(function(req, res, next){
@@ -47,7 +48,7 @@ res.sendFile(__dirname + '/speech.html');
   //__dirname : It will resolve to your project folder.
 });
 server.get('/1',function(req,res){
-res.sendFile(__dirname + '/public/mespeak/mespeak/multipartExample.html');
+res.sendFile(__dirname + '/public/mespeak/multipartExample.html');
   // console.log(req.body.name) ;
   //__dirname : It will resolve to your project folder.
 });
